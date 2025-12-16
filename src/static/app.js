@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", () => {
   const activitiesList = document.getElementById("activities-list");
   const activitySelect = document.getElementById("activity");
@@ -35,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
                        const name = local
                          .replace(/\./g, " ")
                          .replace(/(^\w)|(\s\w)/g, (c) => c.toUpperCase());
-                       return `<li class="participant-item"><span class="avatar">${name.charAt(0) || "?"}</span>${name}</li>`;
+                       return `<li class="participant-item" data-email="${String(p)}"><span class="avatar">${name.charAt(0) || "?"}</span>${name} <img src="delete-icon.svg" class="delete-icon" alt="Remove" /></li>`;
                      })
                      .join("")}
                  </ul>
@@ -51,6 +52,22 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
 
         activitiesList.appendChild(activityCard);
+
+        // Attach delete handlers to participant delete icons
+        const deleteIcons = activityCard.querySelectorAll('.delete-icon');
+        deleteIcons.forEach((icon) => {
+          icon.addEventListener('click', (e) => {
+            const li = e.target.closest('.participant-item');
+            if (!li) return;
+            const email = li.getAttribute('data-email');
+
+            // Remove from DOM immediately
+            li.remove();
+
+            // Optionally: send unregister request to server
+            // fetch(`/activities/${encodeURIComponent(name)}/unregister?email=${encodeURIComponent(email)}`, { method: 'POST' }).catch(err => console.error('Unregister failed', err));
+          });
+        });
 
         // Add option to select dropdown
         const option = document.createElement("option");
